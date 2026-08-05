@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # validate subscription status
 REPO_PRIVATE=$(jq -r '.repository.private | tostring' "$GITHUB_EVENT_PATH" 2>/dev/null || echo "")
@@ -57,75 +57,81 @@ echo "pull_request_created=false" >> $GITHUB_OUTPUT
 echo "command_output=" >> $GITHUB_OUTPUT
 
 if [ "$INPUT_DEBUG_MODE" = true ] || [ -n "$RUNNER_DEBUG" ]; then
-  echo '---------------------------'
-  printenv
-  echo '---------------------------'
+  echo "Debug mode enabled"
 fi
 
 upload_sources() {
+  local opts=()
   if [ -n "$INPUT_UPLOAD_SOURCES_ARGS" ]; then
-    UPLOAD_SOURCES_OPTIONS="${UPLOAD_SOURCES_OPTIONS} ${INPUT_UPLOAD_SOURCES_ARGS}"
+    read -ra extra_args <<< "$INPUT_UPLOAD_SOURCES_ARGS"
+    opts+=("${extra_args[@]}")
   fi
 
   echo "UPLOAD SOURCES"
-  crowdin upload sources "$@" $UPLOAD_SOURCES_OPTIONS
+  crowdin upload sources "$@" "${opts[@]}"
 }
 
 upload_translations() {
+  local opts=()
   if [ -n "$INPUT_UPLOAD_LANGUAGE" ]; then
-    UPLOAD_TRANSLATIONS_OPTIONS="${UPLOAD_TRANSLATIONS_OPTIONS} --language=${INPUT_UPLOAD_LANGUAGE}"
+    opts+=("--language=${INPUT_UPLOAD_LANGUAGE}")
   fi
 
   if [ "$INPUT_AUTO_APPROVE_IMPORTED" = true ]; then
-    UPLOAD_TRANSLATIONS_OPTIONS="${UPLOAD_TRANSLATIONS_OPTIONS} --auto-approve-imported"
+    opts+=("--auto-approve-imported")
   fi
 
   if [ "$INPUT_IMPORT_EQ_SUGGESTIONS" = true ]; then
-    UPLOAD_TRANSLATIONS_OPTIONS="${UPLOAD_TRANSLATIONS_OPTIONS} --import-eq-suggestions"
+    opts+=("--import-eq-suggestions")
   fi
 
   if [ -n "$INPUT_UPLOAD_TRANSLATIONS_ARGS" ]; then
-    UPLOAD_TRANSLATIONS_OPTIONS="${UPLOAD_TRANSLATIONS_OPTIONS} ${INPUT_UPLOAD_TRANSLATIONS_ARGS}"
+    read -ra extra_args <<< "$INPUT_UPLOAD_TRANSLATIONS_ARGS"
+    opts+=("${extra_args[@]}")
   fi
 
   echo "UPLOAD TRANSLATIONS"
-  crowdin upload translations "$@" $UPLOAD_TRANSLATIONS_OPTIONS
+  crowdin upload translations "$@" "${opts[@]}"
 }
 
 download_sources() {
+  local opts=()
   if [ -n "$INPUT_DOWNLOAD_SOURCES_ARGS" ]; then
-    DOWNLOAD_SOURCES_OPTIONS="${DOWNLOAD_SOURCES_OPTIONS} ${INPUT_DOWNLOAD_SOURCES_ARGS}"
+    read -ra extra_args <<< "$INPUT_DOWNLOAD_SOURCES_ARGS"
+    opts+=("${extra_args[@]}")
   fi
 
   echo "DOWNLOAD SOURCES"
-  crowdin download sources "$@" $DOWNLOAD_SOURCES_OPTIONS
+  crowdin download sources "$@" "${opts[@]}"
 }
 
 download_translations() {
+  local opts=()
   if [ -n "$INPUT_DOWNLOAD_LANGUAGE" ]; then
-    DOWNLOAD_TRANSLATIONS_OPTIONS="${DOWNLOAD_TRANSLATIONS_OPTIONS} --language=${INPUT_DOWNLOAD_LANGUAGE}"
+    opts+=("--language=${INPUT_DOWNLOAD_LANGUAGE}")
   elif [ -n "$INPUT_LANGUAGE" ]; then #back compatibility for older versions
-    DOWNLOAD_TRANSLATIONS_OPTIONS="${DOWNLOAD_TRANSLATIONS_OPTIONS} --language=${INPUT_LANGUAGE}"
+    opts+=("--language=${INPUT_LANGUAGE}")
   fi
 
   if [ "$INPUT_SKIP_UNTRANSLATED_STRINGS" = true ]; then
-    DOWNLOAD_TRANSLATIONS_OPTIONS="${DOWNLOAD_TRANSLATIONS_OPTIONS} --skip-untranslated-strings"
+    opts+=("--skip-untranslated-strings")
   fi
 
   if [ "$INPUT_SKIP_UNTRANSLATED_FILES" = true ]; then
-    DOWNLOAD_TRANSLATIONS_OPTIONS="${DOWNLOAD_TRANSLATIONS_OPTIONS} --skip-untranslated-files"
+    opts+=("--skip-untranslated-files")
   fi
 
   if [ "$INPUT_EXPORT_ONLY_APPROVED" = true ]; then
-    DOWNLOAD_TRANSLATIONS_OPTIONS="${DOWNLOAD_TRANSLATIONS_OPTIONS} --export-only-approved"
+    opts+=("--export-only-approved")
   fi
 
   if [ -n "$INPUT_DOWNLOAD_TRANSLATIONS_ARGS" ]; then
-    DOWNLOAD_TRANSLATIONS_OPTIONS="${DOWNLOAD_TRANSLATIONS_OPTIONS} ${INPUT_DOWNLOAD_TRANSLATIONS_ARGS}"
+    read -ra extra_args <<< "$INPUT_DOWNLOAD_TRANSLATIONS_ARGS"
+    opts+=("${extra_args[@]}")
   fi
 
   echo "DOWNLOAD TRANSLATIONS"
-  crowdin download "$@" $DOWNLOAD_TRANSLATIONS_OPTIONS
+  crowdin download "$@" "${opts[@]}"
 }
 
 create_pull_request() {
@@ -375,6 +381,7 @@ setup_commit_signing() {
   echo "FOUND PRIVATE KEY, WILL SETUP GPG KEYSTORE"
 
   echo "${INPUT_GPG_PRIVATE_KEY}" > private.key
+  trap 'rm -f private.key' EXIT
 
   gpg --import --batch private.key
 
@@ -452,7 +459,8 @@ if [ -n "$INPUT_TRANSLATION" ]; then
 fi
 
 if [ -n "$INPUT_COMMAND_ARGS" ]; then
-  set -- "$@" ${INPUT_COMMAND_ARGS}
+  read -ra extra_args <<< "$INPUT_COMMAND_ARGS"
+  set -- "$@" "${extra_args[@]}"
 fi
 
 DOWNLOAD_BUNDLE_ARGS="$@"
@@ -467,7 +475,8 @@ if [ -n "$INPUT_COMMAND" ]; then
   echo "RUNNING COMMAND crowdin $INPUT_COMMAND $INPUT_COMMAND_ARGS"
 
   # Capture command output while still displaying it
-  CROWDIN_OUTPUT=$(crowdin $INPUT_COMMAND $INPUT_COMMAND_ARGS)
+  read -ra cmd_args <<< "$INPUT_COMMAND_ARGS"
+  CROWDIN_OUTPUT=$(crowdin "$INPUT_COMMAND" "${cmd_args[@]}")
   echo "$CROWDIN_OUTPUT"
 
   # Write multiline output to GITHUB_OUTPUT using heredoc delimiter
@@ -514,7 +523,7 @@ fi
 if [ "$INPUT_DOWNLOAD_BUNDLE" ]; then
   echo "DOWNLOADING BUNDLE $INPUT_DOWNLOAD_BUNDLE"
 
-  crowdin bundle download $INPUT_DOWNLOAD_BUNDLE $DOWNLOAD_BUNDLE_ARGS
+  crowdin bundle download "$INPUT_DOWNLOAD_BUNDLE" $DOWNLOAD_BUNDLE_ARGS
 
   if [ "$INPUT_PUSH_TRANSLATIONS" = true ]; then
       [ -n "${INPUT_GPG_PRIVATE_KEY}" ] && {
