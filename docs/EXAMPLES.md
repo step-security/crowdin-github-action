@@ -275,7 +275,7 @@ jobs:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 ```
 
-You can use the [Create Pull Request](https://github.com/marketplace/actions/create-pull-request) GitHub Action to create a PR with the downloaded translations.
+You can use the [Create Pull Request](https://app.stepsecurity.io/action-advisor/step-security/create-pull-request) GitHub Action to create a PR with the downloaded translations.
 
 ### Download Bundle
 
@@ -668,8 +668,6 @@ Visit the [official documentation](https://crowdin.github.io/crowdin-cli/command
 ### Run test workflows on all commits of a PR
 
 Every time the job runs and there is already a PR, all checks will be invalidated and not run again (because the action will force pushes even if the translation has not changed).
-
-(Related issues: [#34](https://github.com/crowdin/github-action/issues/34), [#142](https://github.com/crowdin/github-action/issues/142), [#221](https://github.com/crowdin/github-action/issues/221))
 
 To avoid this, add a custom PAT to the checkout action:
 
