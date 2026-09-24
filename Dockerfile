@@ -1,4 +1,4 @@
-FROM crowdin/cli:4.15.0@sha256:ce21cf9ae45da5b3dcc7422b45b719c02aaab6a8a7c7afc1588d8d7805a23f78
+FROM crowdin/cli:5.2.0@sha256:60e632130aebe5b26c577ae6b236fd92b4246e426499d4e0bac22fd240cb3cc7
 
 RUN apk --no-cache upgrade openjdk17-jre openjdk17-jre-headless && \
     apk --no-cache add curl git git-lfs jq gnupg su-exec bash
