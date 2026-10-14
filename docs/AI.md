@@ -49,7 +49,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Upload Sources to Crowdin
-        uses: step-security/crowdin-github-action@v2
+        uses: step-security/crowdin-github-action@v3
         with:
           upload_sources: true
           upload_translations: false
@@ -62,7 +62,7 @@ jobs:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Pre-translate with AI
-        uses: step-security/crowdin-github-action@v2
+        uses: step-security/crowdin-github-action@v3
         with:
           command: 'auto-translate'
           command_args: '--method ai --ai-prompt=${{ secrets.PROMPT_ID }}'
@@ -71,7 +71,7 @@ jobs:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Download Translations from Crowdin
-        uses: step-security/crowdin-github-action@v2
+        uses: step-security/crowdin-github-action@v3
         with:
           upload_sources: false
           upload_translations: false
@@ -141,7 +141,7 @@ The context commands can also be executed as part of your GitHub Actions workflo
 
 ```yaml
 - name: Download strings missing context
-  uses: step-security/crowdin-github-action@v2
+  uses: step-security/crowdin-github-action@v3
   with:
     command: 'context download'
     command_args: '--status empty'
@@ -153,7 +153,7 @@ The context commands can also be executed as part of your GitHub Actions workflo
 # (e.g., Claude Code GitHub Action)
 
 - name: Upload strings context
-  uses: step-security/crowdin-github-action@v2
+  uses: step-security/crowdin-github-action@v3
   with:
     command: 'context upload'
   env:
