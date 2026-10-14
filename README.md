@@ -37,6 +37,19 @@ This action allows you to easily integrate and automate the localization of your
 - Creates a PR with the translations.
 - Run any [Crowdin CLI](https://crowdin.github.io/crowdin-cli/commands/crowdin) command.
 
+## Crowdin CLI 5
+
+> [!IMPORTANT]
+> The `v3` version of the action runs on [Crowdin CLI 5](https://crowdin.github.io/crowdin-cli/blog/2026/08/26/cli-v5) - a complete rewrite that starts instantly and no longer requires Java. The commands, the `crowdin.yml` configuration file, and the exit codes stay the same, so most workflows carry over unchanged when upgrading from `v2`.
+>
+> If you pass custom arguments via `command`, `command_args`, or any `*_args` input, review the following breaking changes:
+>
+> - The `pre-translate` command is now `auto-translate` (no alias).
+> - `auto-translate`: the `--translate-untranslated-only` option was removed - use `--scope` instead (untranslated is the default).
+> - `--plain` was removed - use the global `--output plain` option instead.
+> - Redundant negatable flags were removed - only the form that changes the default behavior is kept (e.g. `--auto-update` was removed while `--no-auto-update` stays; `--no-auto-approve-imported`, `--no-import-eq-suggestions`, `--no-translate-hidden`, and `--no-auto-tag` were removed). The defaults are unchanged, so simply drop the removed form.
+>
+
 ## Usage
 
 Set up a workflow in *.github/workflows/crowdin.yml* (or add a job to your existing workflows).
@@ -61,7 +74,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: crowdin action
-        uses: step-security/crowdin-github-action@v2
+        uses: step-security/crowdin-github-action@v3
         with:
           upload_sources: true
           upload_translations: false
@@ -214,9 +227,9 @@ You can also run any other Crowdin CLI command by specifying the `command` and `
 
 ```yaml
 - name: crowdin action
-  uses: step-security/crowdin-github-action@v2
+  uses: step-security/crowdin-github-action@v3
   with:
-    command: 'pre-translate'
+    command: 'auto-translate'
     command_args: '-l uk --method tm --branch main'
 
 # Access the command output in subsequent steps (optional)
