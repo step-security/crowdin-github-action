@@ -656,14 +656,14 @@ jobs:
       - name: Pre-translate
         uses: step-security/crowdin-github-action@v2
         with:
-          command: 'pre-translate'
+          command: 'auto-translate'
           command_args: '--language uk --method tm'
         env:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 ```
 
-Visit the [official documentation](https://crowdin.github.io/crowdin-cli/commands/crowdin-pre-translate) to learn more about the available pre-translation options.
+Visit the [official documentation](https://crowdin.github.io/crowdin-cli/commands/crowdin-auto-translate) to learn more about the available pre-translation options.
 
 ### Run test workflows on all commits of a PR
 
