@@ -202,4 +202,4 @@ outputs:
 
 runs:
   using: docker
-  image: 'docker://ghcr.io/step-security/crowdin-github-action:v2.17.0@sha256:e3a299701a5e7686d955541300318a494efb91a9713aa83a210141426a42095d' # v2.17.0
+  image: 'docker://ghcr.io/step-security/crowdin-github-action:v3.3.0@sha256:cf80fd8870f6516f3cf6d564982ef9ca27ad4d75c57f3460ff8451e9d9605e3d' # v3.3.0
