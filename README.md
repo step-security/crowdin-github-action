@@ -301,9 +301,6 @@ If comparing the native GitHub integration and the GitHub Action, the GitHub Act
 
 Use the [Crowdin Contributors](https://github.com/marketplace/actions/action-crowdin-contributors) action to generate a table of your project's top translators and proofreaders in the README. See the [example](/docs/EXAMPLES.md#acknowledging-translators) for details.
 
-## Contributing
-
-If you would like to contribute, please read the [Contributing](/CONTRIBUTING.md) guidelines.
 
 ## Seeking Assistance
 
