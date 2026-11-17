@@ -1,0 +1,12 @@
+{
+  "$comment": "Managed automatically when syncing with upstream. Do not edit by hand.",
+  "schema_version": 1,
+  "onboarding_type": "copied",
+  "action_type": "docker",
+  "upstream": {
+    "repository": "crowdin/github-action",
+    "synced_tag": "v3.6.0",
+    "synced_commit": "d651c77756acbe11a31d77a6fb79d8a239e1e05a",
+    "archived": false
+  }
+}

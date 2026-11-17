@@ -1,4 +1,5 @@
 name: 'crowdin-action'
+author: step-security
 
 description: 'This action allows you to manage and synchronize localization resources with your Crowdin project'
 

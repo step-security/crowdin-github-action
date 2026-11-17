@@ -254,6 +254,18 @@ In order to push translations and create pull requests, the Crowdin GitHub Actio
 
 In case you want to use an [automatic GitHub authentication token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication), you need to assign the [`write` permission to your job](https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs) and [allow GH Actions to create Pull Requests](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#preventing-github-actions-from-creating-or-approving-pull-requests).
 
+## Versioning
+
+`step-security/crowdin-github-action@v3` is a floating tag that always points to the latest `v3.x.y` release. To lock the action to a fixed version, pin to a release tag or a full commit SHA instead:
+
+```yaml
+uses: step-security/crowdin-github-action@v3.3.0
+# or
+uses: step-security/crowdin-github-action@v3
+```
+
+Releases are published as [immutable releases](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases), so a release tag cannot be moved or deleted after publication.
+
 ## Migration from the native GitHub integration
 
 If you are using the [native GitHub integration](https://store.crowdin.com/github), you can easily migrate to the GitHub Action. The main difference is that the GitHub Action requires a Crowdin Personal Access Token and a numeric project ID to be specified. Follow the steps below to migrate:
@@ -284,6 +296,11 @@ files:
 Then create the secrets `CROWDIN_PROJECT_ID` and `CROWDIN_PERSONAL_TOKEN` and finally, create the workflow. See [Usage](#usage) for more details.
 
 If comparing the native GitHub integration and the GitHub Action, the GitHub Action provides more flexibility and control over the localization process.
+
+## Acknowledging translators
+
+Use the [Crowdin Contributors](https://github.com/marketplace/actions/action-crowdin-contributors) action to generate a table of your project's top translators and proofreaders in the README. See the [example](/docs/EXAMPLES.md#acknowledging-translators) for details.
+
 
 ## Seeking Assistance
 

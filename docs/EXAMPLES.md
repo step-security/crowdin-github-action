@@ -12,6 +12,7 @@
 - [Custom `crowdin.yml` file location](#custom-crowdinyml-file-location)
 - [Separate PRs for each target language](#separate-prs-for-each-target-language)
 - [Checking out multiple branches in a single workflow](#checking-out-multiple-branches-in-a-single-workflow)
+- [Repositories with Git LFS](#repositories-with-git-lfs)
 - [Outputs](#outputs)
   - [`pull_request_url`, `pull_request_number`](#pull_request_url-pull_request_number)
 - [Triggers](#triggers)
@@ -27,6 +28,7 @@
   - [Checking the translation progress](#checking-the-translation-progress)
   - [Pre-Translation](#pre-translation)
   - [Run test workflows on all commits of a PR](#run-test-workflows-on-all-commits-of-a-pr)
+  - [Acknowledging translators](#acknowledging-translators)
 - [Automatic AI Pre-Translation](AI.md)
 ---
 
@@ -456,6 +458,28 @@ jobs:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 ```
 
+### Repositories with Git LFS
+
+If your source or translation files are tracked with [Git LFS](https://git-lfs.com/), enable LFS in the checkout step. The action then stores the downloaded translations as LFS objects and uploads them before pushing the localization branch:
+
+```yml
+steps:
+  - uses: actions/checkout@v7
+    with:
+      lfs: true
+
+  - name: Synchronize with Crowdin
+    uses: step-security/crowdin-github-action@v3
+    with:
+      download_translations: true
+      localization_branch_name: l10n_crowdin_translations
+      create_pull_request: true
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+      CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+```
+
 ## Triggers
 
 ### Cron schedule
@@ -676,4 +700,19 @@ To avoid this, add a custom PAT to the checkout action:
   uses: actions/checkout@v7
   with:
     token: ${{ secrets.GHA_CUSTOM_PAT }}
+```
+
+### Acknowledging translators
+
+Use the [Crowdin Contributors](https://github.com/marketplace/actions/action-crowdin-contributors) action to generate a table of your project's top translators and proofreaders in the README. It uses the same Crowdin credentials:
+
+```yaml
+- name: Generate Crowdin Contributors table
+  uses: andrii-bodnar/action-crowdin-contributors@v3
+  with:
+    contributors_per_line: 8
+    max_contributors: 32
+  env:
+    CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+    CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 ```
